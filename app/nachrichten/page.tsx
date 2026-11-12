@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 import { createClient } from "@/lib/supabase/client";
 
 type Practice = { id: string; name: string };
@@ -15,6 +15,11 @@ type Message = {
   created_at: string;
   read_at: string | null;
 };
+
+const input =
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100";
+const primary =
+  "rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700";
 
 export default function NachrichtenPage() {
   const router = useRouter();
@@ -99,87 +104,121 @@ export default function NachrichtenPage() {
     new Date(d).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" });
 
   return (
-    <main className="mx-auto mt-16 max-w-2xl p-4">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Nachrichten</h1>
-        <Link href="/dashboard" className="text-sm text-blue-600 underline">
-          Zum Dashboard
-        </Link>
-      </div>
+    <>
+      <AppHeader />
+      <main className="mx-auto w-full max-w-4xl p-4">
+        <h1 className="mt-6 text-2xl font-bold">Nachrichten</h1>
+        <p className="mt-1 text-slate-600">Sicherer Austausch zwischen Praxen (nur Testdaten).</p>
 
-      <form onSubmit={send} className="mb-8 flex flex-col gap-3 rounded border p-4">
-        <h2 className="font-semibold">Neue Nachricht</h2>
-        <select
-          value={recipient}
-          onChange={(e) => setRecipient(e.target.value)}
-          className="rounded border p-2"
-          required
+        <form
+          onSubmit={send}
+          className="mt-6 flex flex-col gap-3 rounded-xl border bg-white p-5 shadow-sm"
         >
-          <option value="">Empfänger-Praxis wählen…</option>
-          {practices
-            .filter((p) => p.id !== practiceId)
-            .map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
-              </option>
-            ))}
-        </select>
-        <input
-          type="text"
-          placeholder="Betreff"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
-          className="rounded border p-2"
-          required
-        />
-        <textarea
-          placeholder="Nachricht (nur Testdaten, keine echten Patientendaten)"
-          value={body}
-          onChange={(e) => setBody(e.target.value)}
-          className="min-h-24 rounded border p-2"
-          required
-        />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button className="rounded bg-blue-600 p-2 text-white">Senden</button>
-      </form>
+          <h2 className="font-semibold">Neue Nachricht</h2>
+          <select
+            value={recipient}
+            onChange={(e) => setRecipient(e.target.value)}
+            className={input}
+            required
+          >
+            <option value="">Empfänger-Praxis wählen…</option>
+            {practices
+              .filter((p) => p.id !== practiceId)
+              .map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name}
+                </option>
+              ))}
+          </select>
+          <input
+            type="text"
+            placeholder="Betreff"
+            value={subject}
+            onChange={(e) => setSubject(e.target.value)}
+            className={input}
+            required
+          />
+          <textarea
+            placeholder="Nachricht (nur Testdaten, keine echten Patientendaten)"
+            value={body}
+            onChange={(e) => setBody(e.target.value)}
+            className={`${input} min-h-24`}
+            required
+          />
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <button className={primary}>Senden</button>
+        </form>
 
-      <h2 className="mb-2 font-semibold">Posteingang</h2>
-      <ul className="mb-8 flex flex-col gap-2">
-        {inbox.length === 0 && <li className="text-gray-500">Keine Nachrichten.</li>}
-        {inbox.map((m) => (
-          <li key={m.id} className="rounded border p-3">
-            <div className="flex items-center justify-between gap-4">
-              <p className={m.read_at ? "" : "font-bold"}>{m.subject}</p>
-              {!m.read_at && (
-                <button
-                  onClick={() => markRead(m.id)}
-                  className="rounded border px-3 py-1 text-sm"
-                >
-                  Als gelesen markieren
-                </button>
+        <div className="mt-8 grid gap-8 pb-8 md:grid-cols-2">
+          <section>
+            <h2 className="mb-3 font-semibold">
+              Posteingang{" "}
+              <span className="text-sm font-normal text-slate-500">
+                ({inbox.filter((m) => !m.read_at).length} ungelesen)
+              </span>
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {inbox.length === 0 && (
+                <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+                  Keine Nachrichten.
+                </li>
               )}
-            </div>
-            <p className="text-sm text-gray-600">
-              Von {nameOf(m.sender_practice_id)} · {fmt(m.created_at)}
-            </p>
-            <p className="mt-2 whitespace-pre-wrap">{m.body}</p>
-          </li>
-        ))}
-      </ul>
+              {inbox.map((m) => (
+                <li key={m.id} className="rounded-xl border bg-white p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className={m.read_at ? "font-medium" : "font-bold"}>
+                      {!m.read_at && (
+                        <span className="mr-2 inline-block h-2 w-2 rounded-full bg-blue-600" />
+                      )}
+                      {m.subject}
+                    </p>
+                    {!m.read_at && (
+                      <button
+                        onClick={() => markRead(m.id)}
+                        className="shrink-0 rounded-lg border px-2.5 py-1 text-xs hover:bg-slate-50"
+                      >
+                        Gelesen
+                      </button>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    Von {nameOf(m.sender_practice_id)} · {fmt(m.created_at)}
+                  </p>
+                  <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700">{m.body}</p>
+                </li>
+              ))}
+            </ul>
+          </section>
 
-      <h2 className="mb-2 font-semibold">Gesendet</h2>
-      <ul className="flex flex-col gap-2">
-        {sent.length === 0 && <li className="text-gray-500">Noch nichts gesendet.</li>}
-        {sent.map((m) => (
-          <li key={m.id} className="rounded border p-3">
-            <p className="font-medium">{m.subject}</p>
-            <p className="text-sm text-gray-600">
-              An {nameOf(m.recipient_practice_id)} · {fmt(m.created_at)}
-              {m.read_at ? " · gelesen" : " · ungelesen"}
-            </p>
-          </li>
-        ))}
-      </ul>
-    </main>
+          <section>
+            <h2 className="mb-3 font-semibold">Gesendet</h2>
+            <ul className="flex flex-col gap-3">
+              {sent.length === 0 && (
+                <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+                  Noch nichts gesendet.
+                </li>
+              )}
+              {sent.map((m) => (
+                <li key={m.id} className="rounded-xl border bg-white p-4 shadow-sm">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-medium">{m.subject}</p>
+                    <span
+                      className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${
+                        m.read_at ? "bg-green-50 text-green-700" : "bg-slate-100 text-slate-500"
+                      }`}
+                    >
+                      {m.read_at ? "gelesen" : "ungelesen"}
+                    </span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-500">
+                    An {nameOf(m.recipient_practice_id)} · {fmt(m.created_at)}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      </main>
+    </>
   );
 }

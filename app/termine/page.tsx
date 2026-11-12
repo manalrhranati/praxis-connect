@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import AppHeader from "@/components/AppHeader";
 import { createClient } from "@/lib/supabase/client";
 
 type Patient = { id: string; display_name: string };
@@ -20,6 +20,18 @@ const STATUS_LABEL: Record<string, string> = {
   cancelled: "Abgesagt",
   done: "Erledigt",
 };
+
+const STATUS_STYLE: Record<string, string> = {
+  planned: "bg-blue-50 text-blue-700",
+  confirmed: "bg-green-50 text-green-700",
+  cancelled: "bg-slate-100 text-slate-500",
+  done: "bg-emerald-50 text-emerald-700",
+};
+
+const input =
+  "w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100";
+const primary =
+  "rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700";
 
 export default function TerminePage() {
   const router = useRouter();
@@ -108,73 +120,93 @@ export default function TerminePage() {
   if (loading) return null;
 
   return (
-    <main className="mx-auto mt-16 max-w-2xl p-4">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Termine</h1>
-        <Link href="/dashboard" className="text-sm text-blue-600 underline">
-          Zum Dashboard
-        </Link>
-      </div>
+    <>
+      <AppHeader />
+      <main className="mx-auto w-full max-w-4xl p-4">
+        <h1 className="mt-6 text-2xl font-bold">Termine</h1>
+        <p className="mt-1 text-slate-600">Neue Termine anlegen und bestehende verwalten.</p>
 
-      <form onSubmit={addAppointment} className="mb-8 flex flex-col gap-3 rounded border p-4">
-        <h2 className="font-semibold">Neuer Termin</h2>
-        <select
-          value={patientId}
-          onChange={(e) => setPatientId(e.target.value)}
-          className="rounded border p-2"
-          required
+        <form
+          onSubmit={addAppointment}
+          className="mt-6 grid gap-3 rounded-xl border bg-white p-5 shadow-sm md:grid-cols-2"
         >
-          <option value="">Patient wählen…</option>
-          {patients.map((p) => (
-            <option key={p.id} value={p.id}>
-              {p.display_name}
-            </option>
-          ))}
-        </select>
-        <input
-          type="datetime-local"
-          value={start}
-          onChange={(e) => setStart(e.target.value)}
-          className="rounded border p-2"
-          required
-        />
-        <input
-          type="text"
-          placeholder="Grund (optional)"
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          className="rounded border p-2"
-        />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button className="rounded bg-blue-600 p-2 text-white">Termin anlegen</button>
-      </form>
+          <h2 className="font-semibold md:col-span-2">Neuer Termin</h2>
+          <select
+            value={patientId}
+            onChange={(e) => setPatientId(e.target.value)}
+            className={input}
+            required
+          >
+            <option value="">Patient wählen…</option>
+            {patients.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.display_name}
+              </option>
+            ))}
+          </select>
+          <input
+            type="datetime-local"
+            value={start}
+            onChange={(e) => setStart(e.target.value)}
+            className={input}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Grund (optional)"
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            className={`${input} md:col-span-2`}
+          />
+          {error && <p className="text-sm text-red-600 md:col-span-2">{error}</p>}
+          <button className={`${primary} md:col-span-2`}>Termin anlegen</button>
+        </form>
 
-      <ul className="flex flex-col gap-2">
-        {appointments.length === 0 && <li className="text-gray-500">Noch keine Termine.</li>}
-        {appointments.map((a) => (
-          <li key={a.id} className="flex items-center justify-between gap-4 rounded border p-3">
-            <div>
-              <p className="font-medium">{a.patients?.display_name ?? "Unbekannt"}</p>
-              <p className="text-sm text-gray-600">
-                {new Date(a.starts_at).toLocaleString("de-DE", {
-                  dateStyle: "medium",
-                  timeStyle: "short",
-                })}
-                {a.reason ? ` · ${a.reason}` : ""}
-              </p>
-              <p className="text-xs text-gray-500">{STATUS_LABEL[a.status] ?? a.status}</p>
-            </div>
-            {a.status !== "cancelled" && (
-              <button
-                onClick={() => cancelAppointment(a.id)}
-                className="rounded border px-3 py-1 text-sm"
-              >
-                Absagen
-              </button>
-            )}
-          </li>
-        ))}
-      </ul>
-    </main>
+        <h2 className="mb-3 mt-8 font-semibold">Alle Termine</h2>
+        <ul className="flex flex-col gap-3 pb-8">
+          {appointments.length === 0 && (
+            <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+              Noch keine Termine.
+            </li>
+          )}
+          {appointments.map((a) => (
+            <li
+              key={a.id}
+              className={`flex items-center justify-between gap-4 rounded-xl border bg-white p-4 shadow-sm ${
+                a.status === "cancelled" ? "opacity-60" : ""
+              }`}
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="font-medium">{a.patients?.display_name ?? "Unbekannt"}</p>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-medium ${
+                      STATUS_STYLE[a.status] ?? ""
+                    }`}
+                  >
+                    {STATUS_LABEL[a.status] ?? a.status}
+                  </span>
+                </div>
+                <p className="mt-1 text-sm text-slate-600">
+                  {new Date(a.starts_at).toLocaleString("de-DE", {
+                    dateStyle: "medium",
+                    timeStyle: "short",
+                  })}
+                  {a.reason ? ` · ${a.reason}` : ""}
+                </p>
+              </div>
+              {a.status !== "cancelled" && (
+                <button
+                  onClick={() => cancelAppointment(a.id)}
+                  className="rounded-lg border px-3 py-1.5 text-sm hover:bg-slate-50"
+                >
+                  Absagen
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </main>
+    </>
   );
 }
