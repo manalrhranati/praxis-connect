@@ -147,3 +147,7 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute function handle_new_user();
+  
+-- ---------- Praxen für den Empfänger-Dropdown sichtbar ----------
+create policy "Praxen für angemeldete Nutzer sichtbar" on practices
+  for select using (auth.uid() is not null);
