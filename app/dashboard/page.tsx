@@ -28,13 +28,16 @@ export default function DashboardPage() {
       <h1 className="text-2xl font-bold">Dashboard</h1>
       <p className="mt-2">Eingeloggt als {email}</p>
       <div className="mt-4 flex items-center gap-4">
-  <Link href="/termine" className="text-blue-600 underline">
-    Zu den Terminen
-  </Link>
-  <button onClick={logout} className="rounded border px-3 py-1">
-    Abmelden
-  </button>
-</div>
+        <Link href="/termine" className="text-blue-600 underline">
+          Zu den Terminen
+        </Link>
+        <Link href="/nachrichten" className="text-blue-600 underline">
+          Nachrichten
+        </Link>
+        <button onClick={logout} className="rounded border px-3 py-1">
+          Abmelden
+        </button>
+      </div>
     </main>
   );
 }
