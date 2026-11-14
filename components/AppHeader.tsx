@@ -16,15 +16,30 @@ export default function AppHeader() {
   const router = useRouter();
   const supabase = useMemo(() => createClient(), []);
   const [email, setEmail] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+    async function load() {
+      const { data } = await supabase.auth.getUser();
+      setEmail(data.user?.email ?? null);
+      if (data.user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", data.user.id)
+          .single();
+        setIsAdmin(profile?.role === "admin");
+      }
+    }
+    load();
   }, [supabase]);
 
   async function logout() {
     await supabase.auth.signOut();
     router.push("/login");
   }
+
+  const navLinks = isAdmin ? [...links, { href: "/audit-log", label: "Audit-Log" }] : links;
 
   return (
     <header className="border-b border-slate-200 bg-white">
@@ -34,7 +49,7 @@ export default function AppHeader() {
             praxis-connect
           </Link>
           <nav className="flex gap-1">
-            {links.map((l) => (
+            {navLinks.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
