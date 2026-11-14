@@ -1,5 +1,6 @@
 "use client";
-
+import Logo from "@/components/Logo";
+import { APP_NAME } from "@/lib/brand";
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
@@ -45,9 +46,10 @@ export default function AppHeader() {
     <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-lg font-bold text-blue-600">
-            praxis-connect
-          </Link>
+         <Link href="/dashboard" className="flex items-center gap-2 text-lg font-bold text-blue-600">
+  <Logo size={28} />
+  {APP_NAME}
+</Link>
           <nav className="flex gap-1">
             {navLinks.map((l) => (
               <Link

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/components/Logo";
+import { APP_NAME, APP_TAGLINE } from "@/lib/brand";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,10 +36,11 @@ export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
       <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h1 className="text-center text-2xl font-bold text-blue-600">praxis-connect</h1>
-        <p className="mt-1 text-center text-sm text-slate-500">
-          Terminverwaltung und Nachrichten für Praxen
-        </p>
+        <div className="flex flex-col items-center gap-2">
+          <Logo size={48} />
+          <h1 className="text-2xl font-bold text-blue-600">{APP_NAME}</h1>
+          <p className="text-center text-sm text-slate-500">{APP_TAGLINE}</p>
+        </div>
 
         <h2 className="mb-4 mt-6 text-lg font-semibold">
           {mode === "login" ? "Anmelden" : "Registrieren"}
