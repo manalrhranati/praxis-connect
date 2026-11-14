@@ -123,7 +123,7 @@ export default function DashboardPage() {
             <Link
               key={c.label}
               href={c.href}
-              className="rounded-xl border bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow"
+              className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-blue-300 hover:shadow"
             >
               <p className="text-sm text-slate-600">{c.label}</p>
               <p className="mt-2 text-3xl font-bold text-blue-700">{c.value}</p>
@@ -131,7 +131,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        <div className="mb-8 mt-6 rounded-xl border bg-white p-5 shadow-sm">
+        <div className="mb-8 mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
           <h2 className="mb-4 font-semibold">Termine der nächsten 7 Tage</h2>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">

@@ -33,7 +33,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-4">
-      <div className="w-full max-w-sm rounded-xl border bg-white p-6 shadow-sm">
+      <div className="w-full max-w-sm rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <h1 className="text-center text-2xl font-bold text-blue-600">praxis-connect</h1>
         <p className="mt-1 text-center text-sm text-slate-500">
           Terminverwaltung und Nachrichten für Praxen

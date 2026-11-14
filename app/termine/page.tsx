@@ -128,7 +128,7 @@ export default function TerminePage() {
 
         <form
           onSubmit={addAppointment}
-          className="mt-6 grid gap-3 rounded-xl border bg-white p-5 shadow-sm md:grid-cols-2"
+          className="mt-6 grid gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm md:grid-cols-2"
         >
           <h2 className="font-semibold md:col-span-2">Neuer Termin</h2>
           <select
@@ -165,14 +165,14 @@ export default function TerminePage() {
         <h2 className="mb-3 mt-8 font-semibold">Alle Termine</h2>
         <ul className="flex flex-col gap-3 pb-8">
           {appointments.length === 0 && (
-            <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+            <li className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-500">
               Noch keine Termine.
             </li>
           )}
           {appointments.map((a) => (
             <li
               key={a.id}
-              className={`flex items-center justify-between gap-4 rounded-xl border bg-white p-4 shadow-sm ${
+              className={`flex items-center justify-between gap-4 rounded-xl border border-slate-200 bg-white p-4 shadow-sm ${
                 a.status === "cancelled" ? "opacity-60" : ""
               }`}
             >
@@ -198,7 +198,7 @@ export default function TerminePage() {
               {a.status !== "cancelled" && (
                 <button
                   onClick={() => cancelAppointment(a.id)}
-                  className="rounded-lg border px-3 py-1.5 text-sm hover:bg-slate-50"
+                  className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50"
                 >
                   Absagen
                 </button>

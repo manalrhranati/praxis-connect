@@ -112,7 +112,7 @@ export default function NachrichtenPage() {
 
         <form
           onSubmit={send}
-          className="mt-6 flex flex-col gap-3 rounded-xl border bg-white p-5 shadow-sm"
+          className="mt-6 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
         >
           <h2 className="font-semibold">Neue Nachricht</h2>
           <select
@@ -159,12 +159,12 @@ export default function NachrichtenPage() {
             </h2>
             <ul className="flex flex-col gap-3">
               {inbox.length === 0 && (
-                <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+                <li className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-500">
                   Keine Nachrichten.
                 </li>
               )}
               {inbox.map((m) => (
-                <li key={m.id} className="rounded-xl border bg-white p-4 shadow-sm">
+                <li key={m.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <p className={m.read_at ? "font-medium" : "font-bold"}>
                       {!m.read_at && (
@@ -175,7 +175,7 @@ export default function NachrichtenPage() {
                     {!m.read_at && (
                       <button
                         onClick={() => markRead(m.id)}
-                        className="shrink-0 rounded-lg border px-2.5 py-1 text-xs hover:bg-slate-50"
+                        className="shrink-0 rounded-lg border border-slate-300 px-2.5 py-1 text-xs hover:bg-slate-50"
                       >
                         Gelesen
                       </button>
@@ -194,12 +194,12 @@ export default function NachrichtenPage() {
             <h2 className="mb-3 font-semibold">Gesendet</h2>
             <ul className="flex flex-col gap-3">
               {sent.length === 0 && (
-                <li className="rounded-xl border border-dashed bg-white p-6 text-center text-slate-500">
+                <li className="rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-slate-500">
                   Noch nichts gesendet.
                 </li>
               )}
               {sent.map((m) => (
-                <li key={m.id} className="rounded-xl border bg-white p-4 shadow-sm">
+                <li key={m.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                   <div className="flex items-start justify-between gap-3">
                     <p className="font-medium">{m.subject}</p>
                     <span

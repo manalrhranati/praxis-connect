@@ -27,7 +27,7 @@ export default function AppHeader() {
   }
 
   return (
-    <header className="border-b bg-white">
+    <header className="border-b border-slate-200 bg-white">
       <div className="mx-auto flex w-full max-w-4xl items-center justify-between gap-4 px-4 py-3">
         <div className="flex items-center gap-6">
           <Link href="/dashboard" className="text-lg font-bold text-blue-600">
@@ -53,7 +53,7 @@ export default function AppHeader() {
           {email && <span className="hidden text-sm text-slate-500 md:inline">{email}</span>}
           <button
             onClick={logout}
-            className="rounded-lg border px-3 py-1.5 text-sm hover:bg-slate-50"
+            className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm hover:bg-slate-50"
           >
             Abmelden
           </button>
