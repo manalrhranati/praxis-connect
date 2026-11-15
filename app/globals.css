@@ -1,0 +1,17 @@
+@import "tailwindcss";
+
+
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: #e2e8f0;
+  }
+}
+
+body {
+  background: #f1f5f9;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
